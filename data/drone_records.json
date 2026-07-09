@@ -45,6 +45,17 @@
   "battery_percent": 150,
   "timestamp": "invalid-date",
   "status": "flying"
+} ,
+{
+  "drone_id": "DRONE-006",
+  "drone_type": "Quadcopter",
+  "operator_id": "OP-15",
+  "latitude": 200,
+  "longitude": 34.7818,
+  "altitude_m": -50,
+  "battery_percent": 150,
+  "timestamp": "2026-05-28T10:40:00Z",
+  "status": "flying"
 }
 
 ]

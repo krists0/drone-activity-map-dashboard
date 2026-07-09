@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator
 PipelineStatus = Literal["started", "completed", "failed"]
 
 
-class PiplineRunRead(BaseModel):
+class PipelineRunRead(BaseModel):
     id : int
     started_at : datetime
     finished_at : datetime | None
@@ -18,6 +18,6 @@ class PiplineRunRead(BaseModel):
     error_message : str | None
 
     model_config = ConfigDict(from_attributes=True)
-    
+
 class PiplineRunResult(BaseModel):
-    run : PiplineRunRead
+    run : PipelineRunRead
