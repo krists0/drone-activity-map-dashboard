@@ -5,12 +5,12 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 
-DroneStatus = Literal["active", "flying", "lost_signal"]
+DroneStatus = Literal["active", "landed", "lost_signal"]
 
 
 class DroneRecordBase(BaseModel):
      
-
+    #[3] Validation Rules
     drone_id : str = Field(..., min_length=1)
     drone_type : str = Field(..., min_length=1)
     operator_id : str = Field(...,min_length=1)

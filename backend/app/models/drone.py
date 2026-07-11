@@ -1,7 +1,7 @@
 
 
 
-from sqlalchemy import Column ,Integer ,Float ,String ,DateTime
+from sqlalchemy import Column ,Integer ,Float ,String ,DateTime, UniqueConstraint
 
 from app.db.database import Base
 
@@ -9,6 +9,9 @@ from app.db.database import Base
 class DroneRecord(Base):
     __tablename__= "drone_records"
 
+    __table_args__ = (
+        UniqueConstraint("drone_id", "timestamp", name="uq_drone_id_timestamp"),
+    )
     id = Column(Integer , primary_key=True, index=True)
     drone_id = Column(String , index=True , nullable=False)
     drone_type = Column(String , index=True , nullable=False)

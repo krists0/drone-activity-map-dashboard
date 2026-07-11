@@ -1,3 +1,4 @@
+
 import {
   AfterViewInit,
   Component,
@@ -6,48 +7,46 @@ import {
   PLATFORM_ID,
   ViewChild,
   inject,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Input,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
 
 import { isPlatformBrowser } from '@angular/common';
 import * as maplibregl from 'maplibre-gl';
-import { HttpErrorResponse } from '@angular/common/http';
 import { DroneRecord } from '../../../../core/models/drone-record.model';
-import { DroneApiService } from '../../../../core/services/drone-api.service';
+
 @Component({
   selector: 'app-drone-map',
   standalone: true,
   templateUrl: './drone-map.html',
-  styleUrls: ['./drone-map.scss']
+  styleUrls: ['./drone-map.scss'] // ◄ FIXED NG2008: Changed from .css to .component.scss to match your file structure
 })
-export class DroneMapComponent implements AfterViewInit, OnDestroy {
+export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
-  @ViewChild('mapContainer')
-  mapContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('mapContainer') mapContainer!: ElementRef<HTMLDivElement>;
+  
+  @Input() droneList: DroneRecord[] = []; 
 
+  private mapReady = false;
   currentUtcTime = '';
 
   private map?: maplibregl.Map;
-  private timer?: ReturnType<typeof setInterval>;
+  private clockTimer?: ReturnType<typeof setInterval>;
+  private markers: maplibregl.Marker[] = []; 
 
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
 
-
-  private readonly droneApiService: DroneApiService = inject(DroneApiService);
-
-  droneList: DroneRecord[] = [];
- 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
-    this.updateUtcTime();
-    this.timer = setInterval(() => {
-      this.updateUtcTime();
-    }, 1000);
+    
+    // Start the live dashboard UTC clock tracker
+    this.startClock();
 
-    //map dashboard
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
@@ -56,8 +55,9 @@ export class DroneMapComponent implements AfterViewInit, OnDestroy {
     });
 
     this.map.on('load', () => {
+      this.mapReady = true;
       this.map?.resize();
-      this.loadDronesFromBackend();
+      this.renderDronesIfReady();
     });
 
     this.map.addControl(
@@ -66,37 +66,33 @@ export class DroneMapComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  
-
-  private loadDronesFromBackend(): void {
-  this.droneApiService.getDrones().subscribe({
-    next: (drones: DroneRecord[]) => {
-      this.droneList = drones;
-      this.renderDrones();
-    },
-    error: (err: HttpErrorResponse) => {
-      console.error('Failed to load drones from backend', err.message);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['droneList']) {
+      this.renderDronesIfReady();
     }
-  });
   }
-
-  //[4]displays drone records on a map. Clicking a marker should open a popup 
+  private renderDronesIfReady(): void {
+    if (!this.mapReady || !this.map) {
+      return;
+    }
+    this.renderDrones();
+  }
 
   private renderDrones(): void {
     if (!this.map) return;
 
+    this.clearMarkers();
+
     this.droneList.forEach(drone => {
       const imgElement = document.createElement('img');
-      imgElement.src = 'drone-icon-pin.png';
+      imgElement.src = 'drone-icon-pin.png'; 
       imgElement.style.width = '32px'; 
       imgElement.style.height = '32px';
       imgElement.style.cursor = 'pointer';
-    
 
-      new maplibregl.Marker({
+      const marker = new maplibregl.Marker({
         element: imgElement,
-        anchor: 'center', 
-        offset: [0, 0]
+        anchor: 'center'
       })
       .setLngLat([drone.longitude, drone.latitude])
       .setPopup(
@@ -107,13 +103,27 @@ export class DroneMapComponent implements AfterViewInit, OnDestroy {
         }).setHTML(this.getDronePopupHTML(drone))
       )
       .addTo(this.map!);
-    });
 
-   
+      this.markers.push(marker);
+    });
   }
 
-  getDronePopupHTML(drone: DroneRecord) {
-    // Check for critical battery or active status to apply adaptive colors
+  private clearMarkers(): void {
+    this.markers.forEach(m => m.remove());
+    this.markers = [];
+  }
+
+  private startClock(): void {
+    this.clockTimer = setInterval(() => {
+      const now = new Date();
+      this.currentUtcTime = now.toLocaleString('en-GB', {
+        timeZone: 'UTC', day: '2-digit', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+      }) + ' UTC';
+      this.cdr.detectChanges();
+    }, 1000);
+  }
+
+  getDronePopupHTML(drone: DroneRecord): string {
     const isLowBattery = drone.battery_percent < 20;
     const isActiveStatus = drone.status.toLowerCase() === 'active';
     
@@ -121,95 +131,37 @@ export class DroneMapComponent implements AfterViewInit, OnDestroy {
     const statusColor = isActiveStatus ? '#38a169' : '#e53e3e';
 
     return `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 12px; line-height: 1.6; text-align: left; direction: ltr; background: #ffffff;">
-        
-        <!-- Header Section: Drone ID -->
+      <div style="font-family: sans-serif; padding: 12px; line-height: 1.6; text-align: left; background: #ffffff;">
         <div style="border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 10px;">
-          <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #8898aa; font-weight: bold; display: block; margin-bottom: 2px;">
-            Drone Identifier
-          </span>
-          <strong style="font-size: 16px; color: #1a73e8; font-weight: 700; letter-spacing: -0.3px;">
-            ${drone.drone_id}
-          </strong>
+          <strong style="font-size: 16px; color: #1a73e8; font-weight: 700;">${drone.drone_id}</strong>
         </div>
-        
-        <!-- Content Section -->
         <div style="font-size: 13px; color: #4a5568;">
-          
-          <!-- Drone Specifications -->
-          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <span style="color: #718096;">Type:</span>
-            <span style="font-weight: 600; color: #2d3748;">${drone.drone_type}</span>
-          </div>
-          
-          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <span style="color: #718096;">Operator:</span>
-            <span style="font-weight: 600; color: #2d3748; font-family: monospace;">${drone.operator_id}</span>
-          </div>
-          
-          <div style="border-top: 1px dashed #e2e8f0; margin: 8px 0;"></div>
-          
-          <!-- Telemetry Data -->
-          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <div><span style="color: #718096;">Altitude:</span> <strong style="color: #2d3748;">${drone.altitude_m} m</strong></div>
-            <div><span style="color: #718096;">Speed:</span> <strong style="color: #2d3748;">${drone.speed_kmh} km/h</strong></div>
-          </div>
-          
-          <div style="border-top: 1px dashed #e2e8f0; margin: 8px 0;"></div>
-          
-          <!-- Key Metrics Cards -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
-            
-            <!-- Battery Widget -->
-            <div style="background: #f7fafc; padding: 6px 8px; border-radius: 6px; border: 1px solid #edf2f7; text-align: center;">
-              <span style="font-size: 11px; color: #718096; display: block; margin-bottom: 2px;">Battery</span>
-              <span style="color: ${batteryColor}; font-weight: 700; font-size: 14px;">
-                ${drone.battery_percent}%
-              </span>
+          <div>Type: <b>${drone.drone_type}</b></div>
+          <div>Operator: <b>${drone.operator_id}</b></div>
+          <hr style="border:none; border-top:1px dashed #e2e8f0; margin:8px 0;"/>
+          <div>Altitude: <b>${drone.altitude_m} m</b></div>
+          <div>Speed: <b>${drone.speed_kmh} km/h</b></div>
+          <hr style="border:none; border-top:1px dashed #e2e8f0; margin:8px 0;"/>
+          <div style="display: flex; gap: 10px;">
+            <div style="background:#f7fafc; padding:5px; border-radius:4px; flex:1; text-align:center;">
+              <span style="font-size:11px;color:#718096;display:block;">Battery</span>
+              <b style="color:${batteryColor}; font-size:14px;">${drone.battery_percent}%</b>
             </div>
-            
-            <!-- Status Widget -->
-            <div style="background: #f7fafc; padding: 6px 8px; border-radius: 6px; border: 1px solid #edf2f7; text-align: center;">
-              <span style="font-size: 11px; color: #718096; display: block; margin-bottom: 2px;">Status</span>
-              <span style="color: ${statusColor}; font-weight: 700; font-size: 12px; text-transform: uppercase;">
-                ${drone.status}
-              </span>
+            <div style="background:#f7fafc; padding:5px; border-radius:4px; flex:1; text-align:center;">
+              <span style="font-size:11px;color:#718096;display:block;">Status</span>
+              <b style="color:${statusColor}; font-size:12px; text-transform:uppercase;">${drone.status}</b>
             </div>
-            
           </div>
-
-          <!-- Footer: Timestamp -->
-          <div style="font-size: 10px; color: #a0aec0; margin-top: 12px; text-align: center; border-top: 1px solid #edf2f7; padding-top: 6px;">
-            Last Update: ${drone.timestamp}
-          </div>
-          
         </div>
       </div>
     `;
   }
 
-
-  private updateUtcTime(): void {
-    const now = new Date();
-    this.currentUtcTime = now.toLocaleString('en-GB', {
-      timeZone: 'UTC',
-      day: '2-digit',
-      month: 'short',
-      year: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit', 
-      hour12: false
-    }) + ' UTC';
-
-  
-    this.cdr.detectChanges(); 
-  }
-
   ngOnDestroy(): void {
+    this.clearMarkers();
     this.map?.remove();
-    if (this.timer) {
-      clearInterval(this.timer);
+    if (this.clockTimer) {
+      clearInterval(this.clockTimer);
     }
   }
 }

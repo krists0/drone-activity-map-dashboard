@@ -1,59 +1,112 @@
-# Frontend
+# Drone Activity Map Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.6.
+A small full-stack application for ingesting simulated drone telemetry data, storing it in PostgreSQL, and displaying drone activity on an interactive map.
 
-## Development server
+The project demonstrates backend API design, ingest pipeline logic, PostgreSQL persistence, Angular frontend integration, MapLibre map rendering, and clean layered architecture.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## Tech Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Backend
+- Python
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Pydantic / Pydantic Settings
 
-## Code scaffolding
+### Frontend
+- Angular
+- TypeScript
+- MapLibre GL JS
+- CARTO basemap style
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Infrastructure
+- Docker Compose
+- PostgreSQL container
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Project Objective
 
-```bash
-ng generate --help
-```
+The system receives simulated drone telemetry records from a JSON file.
 
-## Building
+Each record represents a drone position at a specific timestamp.
 
-To build the project run:
+The backend is responsible for:
 
-```bash
-ng build
-```
+1. Loading raw drone records from a JSON file.
+2. Validating required fields and allowed values.
+3. Skipping invalid records.
+4. Normalizing data where needed.
+5. Storing valid records in PostgreSQL.
+6. Saving pipeline run status and processing counters.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The frontend displays the processed drone records on a map using MapLibre.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Important Note
 
-```bash
-ng test
-```
+The drone telemetry data is simulated and does not represent real drone operations.
 
-## Running end-to-end tests
+Real map coordinates are used only for visibility on the frontend map.
 
-For end-to-end (e2e) testing, run:
+---
 
-```bash
-ng e2e
-```
+## Current Project Structure
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```text
+drone-activity-map-dashboard/
+│
+├── backend/
+│   ├── app/
+│   │   ├── core/
+│   │   │   └── config.py
+│   │   │
+│   │   ├── db/
+│   │   │   └── database.py
+│   │   │
+│   │   ├── models/
+│   │   │   ├── drone.py
+│   │   │   └── pipeline.py
+│   │   │
+│   │   ├── schemas/
+│   │   │   ├── drone.py
+│   │   │   └── pipeline.py
+│   │   │
+│   │   ├── services/
+│   │   │   └── pipeline_service.py
+│   │   │
+│   │   ├── routers/
+│   │   │   ├── drones.py
+│   │   │   └── pipeline.py
+│   │   │
+│   │   └── main.py
+│   │
+│   ├── tests/
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── frontend/
+│   ├── src/
+│   │   └── app/
+│   │       ├── core/
+│   │       │   ├── models/
+│   │       │   │   └── drone-record.model.ts
+│   │       │   └── services/
+│   │       │       └── drone-api.service.ts
+│   │       │
+│   │       └── features/
+│   │           └── dashboard/
+│   │               └── components/
+│   │                   └── drone-map/
+│   │
+│   └── Dockerfile
+│
+├── data/
+│   └── drone_records.json
+│
+├── docker-compose.yml
+├── README.md
+└── .gitignore
