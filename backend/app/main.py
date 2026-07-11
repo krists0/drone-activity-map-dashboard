@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.db.database import Base, engine, get_db
 from app.services.pipeline_service import PipelineService
 from app.routers import drones, pipeline
-
+from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 INPUT_FILE_PATH = os.path.join(os.path.dirname(__file__), "../../data/drone_records.json")
 
@@ -14,6 +14,16 @@ app = FastAPI(
     version="0.1.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:4200",
+        "http://127.0.0.1:4200",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(pipeline.router, prefix="/api/pipeline", tags=["Pipeline"])
 app.include_router(drones.router, prefix="/api", tags=["Drones"]) 

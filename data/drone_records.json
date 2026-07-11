@@ -12,7 +12,7 @@
     "status": "active"
   },
   {
-    "drone_id": "DRONE-002",
+    "drone_id": "DRONE-032",
     "drone_type": "Fixed Wing",
     "operator_id": "OP-456",
     "latitude": 31.7683,
@@ -56,6 +56,18 @@
   "battery_percent": 150,
   "timestamp": "2026-05-28T10:40:00Z",
   "status": "flying"
-}
+} ,
+{
+    "drone_id": "DRONE-009",
+    "drone_type": "Fixed Wing",
+    "operator_id": "OP-786",
+    "latitude": 31.7699,
+    "longitude": 35.2155,
+    "altitude_m": 200,
+    "speed_kmh": 80,
+    "battery_percent": 82,
+    "timestamp": "2026-06-28T10:35:00Z",
+    "status": "active"
+  }
 
 ]

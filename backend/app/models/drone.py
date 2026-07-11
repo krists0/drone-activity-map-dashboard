@@ -22,5 +22,5 @@ class DroneRecord(Base):
     status = Column(String, index=True , nullable=False)
 
 
-def __repr__(self) -> str:
-    return f"<DroneRecord(drone_id='{self.drone_id}', status='{self.status}', battery={self.battery_percent}%)>"
+    def __repr__(self) -> str:
+        return f"<DroneRecord(drone_id='{self.drone_id}', status='{self.status}', battery={self.battery_percent}%)>"
