@@ -42,6 +42,18 @@ class PipelineService:
                     #[2] Validate required fields and allowed values
                     #[4] Normalize data where needed 
                     validated_json = DroneRecordBase(**record)
+
+                    existing_record = (db.query(DroneRecord)
+                        .filter(
+                            DroneRecord.drone_id == validated_json.drone_id,
+                            DroneRecord.timestamp == validated_json.timestamp,
+                        )
+                        .first()
+                    )
+
+                    if existing_record:
+                        continue
+                    
                     drone_db_record = DroneRecord(
                         drone_id=validated_json.drone_id,
                         drone_type=validated_json.drone_type,

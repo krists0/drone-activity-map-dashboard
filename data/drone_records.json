@@ -59,7 +59,7 @@
 } ,
 {
   "drone_id": "DRONE-009",
-  "drone_type": "Fixed Wing",
+  "drone_type": "Quadcopter",
   "operator_id": "OP-786",
   "latitude": 30.9878,
   "longitude": 34.9297,

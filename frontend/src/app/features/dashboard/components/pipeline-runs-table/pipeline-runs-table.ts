@@ -1,9 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-pipeline-runs-table',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './pipeline-runs-table.html',
   styleUrl: './pipeline-runs-table.scss',
 })
-export class PipelineRunsTable {}
+export class PipelineRunsTable {
+
+
+  @Input() pipelineData: any = null;
+
+  @Output() pipelineTriggered = new EventEmitter<void>();
+
+ 
+  runPipeline(): void {
+    this.pipelineTriggered.emit();
+  }
+}

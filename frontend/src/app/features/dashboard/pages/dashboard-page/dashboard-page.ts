@@ -5,13 +5,17 @@ import { FilterPanelComponent } from '../../components/filter-panel/filter-panel
 import { DroneApiService } from '../../../../core/services/drone-api.service';
 import { DroneRecord } from '../../../../core/models/drone-record.model';
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { PipelineRunsTable } from '../../components/pipeline-runs-table/pipeline-runs-table';
+import { PipelineService } from '../../../../core/services/pipeline-api.service';
+
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
   imports: [
     CommonModule, 
     DroneMapComponent, 
-    FilterPanelComponent
+    FilterPanelComponent,
+    PipelineRunsTable
   ],
   templateUrl: './dashboard-page.html',
   styleUrls: ['./dashboard-page.scss']
@@ -19,9 +23,10 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 export class DashboardPageComponent implements OnInit {
   
   private droneApiService = inject(DroneApiService);
+  private pipelineApiService = inject(PipelineService);
   private cdr = inject(ChangeDetectorRef);
   drones: DroneRecord[] = [];
-
+  latestRun: any = null;
   ngOnInit(): void {
     this.loadDronesFromBackend();
   }
@@ -47,6 +52,43 @@ export class DashboardPageComponent implements OnInit {
       },
       error: (err) => {
         console.error('Network Error: Failed to fetch filtered drones from Python backend', err);
+      }
+    });
+  }
+
+  onPipelineTriggered(): void {
+    // We call the post ingestion router engine from your API service layer
+    this.pipelineApiService.triggerPipeline().subscribe({
+      next: (response: any) => {
+        console.log('Pipeline executed successfully via UI button request!', response);
+        // Refresh both the map markers list data indices and pipeline run counter displays [4.3]
+        this.refreshDashboardData();
+      },
+      error: (err: any) => {
+        console.error('Pipeline Trigger Failed: Backend server integration error', err);
+      }
+    });
+  }
+
+  private refreshDashboardData(): void {
+    this.loadDronesFromBackend();
+    this.loadLatestPipelineRunLog();
+  }
+
+  /**
+   * Queries historical telemetry processing cycles to populate UI tracking tables [4.3]
+   */
+  private loadLatestPipelineRunLog(): void {
+    this.pipelineApiService.getPipelineRuns().subscribe({
+      next: (runs: any[]) => {
+        // FIXED: Extract the first array item securely INSIDE the network subscribe event block [4.3]
+        if (runs && runs.length > 0) {
+          this.latestRun = runs[0];
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load pipeline runs log', err);
       }
     });
   }
