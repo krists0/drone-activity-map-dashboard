@@ -38,7 +38,24 @@ export class DashboardPageComponent implements OnInit {
    * @param activeFilters Lowercase parameter tokens mapped directly from the filter form controls
    */
   onFiltersChanged(activeFilters: any): void {
-    this.loadDronesFromBackend(activeFilters);
+  
+    const backendFilters: any = {
+      drone_type: activeFilters.drone_type,
+      status: activeFilters.status,
+      operator_id: activeFilters.operator_id,
+      min_battery: activeFilters.min_battery
+    };
+
+    if (activeFilters.from_date && activeFilters.from_date !== '') {
+      backendFilters.from_date = `${activeFilters.from_date}T00:00:00Z`;
+    }
+
+    if (activeFilters.to_date && activeFilters.to_date !== '') {
+      backendFilters.to_date = `${activeFilters.to_date}T23:59:59Z`;
+    }
+
+    // Trigger the official HTTP request stream with the remapped parameter configurations [4.2]
+    this.loadDronesFromBackend(backendFilters);
   }
 
   
@@ -46,7 +63,6 @@ export class DashboardPageComponent implements OnInit {
     this.droneApiService.getDrones(filters).subscribe({
       next: (data: DroneRecord[]) => {
         this.drones = [...data];
-
         // Forces Angular to push the new input into DroneMapComponent immediately
         this.cdr.detectChanges();
       },
@@ -81,7 +97,7 @@ export class DashboardPageComponent implements OnInit {
   private loadLatestPipelineRunLog(): void {
     this.pipelineApiService.getPipelineRuns().subscribe({
       next: (runs: any[]) => {
-        // FIXED: Extract the first array item securely INSIDE the network subscribe event block [4.3]
+        //Extract the first array item securely INSIDE the network subscribe event block [4.3]
         if (runs && runs.length > 0) {
           this.latestRun = runs[0];
           this.cdr.detectChanges();

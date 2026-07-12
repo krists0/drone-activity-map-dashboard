@@ -31,11 +31,11 @@ getDrones(filters: any = {}): Observable<DroneRecord[]> {
     if (filters.min_battery) {
       params = params.set('min_battery', filters.min_battery.toString());
     }
-    if (filters.from) {
-      params = params.set('from', filters.from);
+    if (filters.from_date) {
+      params = params.set('from_date', filters.from_date);
     }
-    if (filters.to) {
-      params = params.set('to', filters.to);
+    if (filters.to_date) {
+      params = params.set('to_date', filters.to_date);
     }
 
     // Sends the payload over the wire: GET /api/drones?status=active&min_battery=50

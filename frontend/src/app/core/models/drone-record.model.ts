@@ -1,4 +1,4 @@
-export type DroneStatus = 'active' | 'flying' | 'lost_signal';
+export type DroneStatus = 'active' | 'landed' | 'lost_signal';
 
 export interface DroneRecord {
   id: number;
