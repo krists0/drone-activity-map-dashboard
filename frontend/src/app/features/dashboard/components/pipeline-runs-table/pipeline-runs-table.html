@@ -1,1 +1,47 @@
-<p>pipeline-runs-table works!</p>
+
+<div class="pipeline-container">
+  <h3>⚡ Ingestion Pipeline Status</h3>
+
+  <div class="pipeline-field">
+    
+    <!-- Status Display Tracker -->
+    <label>
+      <strong>Status:</strong> 
+      <span class="status-badge" [class]="pipelineData ? pipelineData.status : 'idle'">
+        {{ pipelineData ? pipelineData.status : 'No runs yet' }}
+      </span>
+    </label>
+    
+    <!-- Total Records Ingested Counter -->
+    <label>
+      <strong>Total Records Read:</strong> 
+      {{ pipelineData ? pipelineData.total_records : 0 }}
+    </label>
+    
+    <!-- Valid Database Entries Counter -->
+    <label>
+      <strong>Valid Records Inserted:</strong> 
+      <span class="success-txt">{{ pipelineData ? pipelineData.valid_records : 0 }}</span>
+    </label>
+    
+    <!-- Invalid Skipped Errors Counter -->
+    <label>
+      <strong>Invalid Records Skipped:</strong> 
+      <span class="fail-txt">{{ pipelineData ? pipelineData.invalid_records : 0 }}</span>
+    </label>
+    
+    <!-- Last Job Execution Date Tracker -->
+    <label *ngIf="pipelineData && pipelineData.started_at">
+      <strong>Last Run:</strong> 
+      {{ pipelineData.started_at | date:'mediumTime' }}
+    </label>
+
+  </div>
+
+  <!-- Action Trigger Trigger Pipeline Runner Button Control Panel [4.3] -->
+  <div class="action-buttons">
+    <button class="btn-run-pipeline" (click)="runPipeline()">
+      🚀 Run Ingestion Pipeline
+    </button>
+  </div>
+</div>

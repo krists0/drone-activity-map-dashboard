@@ -6,7 +6,7 @@ from app.db.database import get_db
 from app.services.pipeline_service import PipelineService
 from app.schemas.pipeline import PipelineRunRead
 from app.models.pipeline import PipelineRun
-#API Endpoints
+#API Endpoints pipline
 router = APIRouter()
 
 INPUT_FILE_PATH = os.path.join(os.path.dirname(__file__), "../../../data/drone_records.json")

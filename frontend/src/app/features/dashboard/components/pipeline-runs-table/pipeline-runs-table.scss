@@ -1,0 +1,93 @@
+.pipeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background-color: #1e293b; /* Uniform dashboard dark layout */
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  margin-top: 15px; /* Adds clean spacing below the filters panel */
+
+  h3 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    color: #38bdf8; /* Cyber neon blue accent */
+    font-weight: 600;
+  }
+}
+
+.pipeline-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 13px;
+    color: #94a3b8; /* Soft readable labeling tint */
+    font-weight: 500;
+  }
+}
+
+.status-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 11px;
+  background-color: #475569;
+  color: white;
+
+  &.completed {
+    background-color: #16a34a;
+    color: white;
+  }
+
+  &.failed {
+    background-color: #dc2626;
+    color: white;
+  }
+
+  &.started {
+    background-color: #ca8a04;
+    color: white;
+  }
+}
+
+.success-txt {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.fail-txt {
+  color: #f87171;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-run-pipeline {
+  flex: 1;
+  background-color: #22c55e; /* Vibrant action green color */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.2);
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #16a34a;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}

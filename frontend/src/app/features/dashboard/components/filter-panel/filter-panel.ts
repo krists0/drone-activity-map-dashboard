@@ -19,8 +19,8 @@ export class FilterPanelComponent {
     status: '',
     operator_id: '',
     min_battery: null as number | null, 
-    from: '',
-    to: ''
+    from_date: '',
+    to_date: ''
   };
 
  
@@ -35,8 +35,8 @@ export class FilterPanelComponent {
       status: '',
       operator_id: '',
       min_battery: null,
-      from: '',
-      to: ''
+      from_date: '',
+      to_date: ''
     };
    
     this.filtersChanged.emit({ ...this.localFilters });

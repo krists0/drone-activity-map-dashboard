@@ -39,6 +39,7 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
 
+  
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -126,7 +127,8 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   getDronePopupHTML(drone: DroneRecord): string {
     const isLowBattery = drone.battery_percent < 20;
     const isActiveStatus = drone.status.toLowerCase() === 'active';
-    
+    const formattedTime = drone.timestamp ? new Date(drone.timestamp).toLocaleString('en-GB') : 'N/A';
+
     const batteryColor = isLowBattery ? '#e53e3e' : '#38a169';
     const statusColor = isActiveStatus ? '#38a169' : '#e53e3e';
 
@@ -151,7 +153,11 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
               <span style="font-size:11px;color:#718096;display:block;">Status</span>
               <b style="color:${statusColor}; font-size:12px; text-transform:uppercase;">${drone.status}</b>
             </div>
+            
           </div>
+          <div style="font-size: 11px; color: #a0aec0; margin-top: 14px; text-align: center; border-top: 1px solid #edf2f7; padding-top: 8px;">
+              <strong>Last Update:</strong> ${formattedTime}
+            </div>
         </div>
       </div>
     `;

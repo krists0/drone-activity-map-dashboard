@@ -5,7 +5,14 @@
   <div class="sidebar-panel">
     <!-- We listen to the (filtersChanged) emission and trigger our local method -->
     <app-filter-panel (filtersChanged)="onFiltersChanged($event)"></app-filter-panel>
+
+    <!-- pipeline status and trigger component -->
+    <app-pipeline-runs-table 
+      [pipelineData]="latestRun" 
+      (pipelineTriggered)="onPipelineTriggered()">
+    </app-pipeline-runs-table>
   </div>
+  
 
   <!-- Main section containing the map display -->
   <div class="main-content">
