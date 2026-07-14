@@ -21,7 +21,7 @@ import { DroneRecord } from '../../../../core/models/drone-record.model';
   selector: 'app-drone-map',
   standalone: true,
   templateUrl: './drone-map.html',
-  styleUrls: ['./drone-map.scss'] // ◄ FIXED NG2008: Changed from .css to .component.scss to match your file structure
+  styleUrls: ['./drone-map.scss'] // 
 })
 export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
