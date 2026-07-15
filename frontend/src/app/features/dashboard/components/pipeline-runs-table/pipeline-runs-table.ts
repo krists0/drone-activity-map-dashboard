@@ -10,12 +10,10 @@ import { CommonModule } from '@angular/common';
 })
 export class PipelineRunsTable {
 
-
-  @Input() pipelineData: any = null;
+  @Input() pipelineRuns: any[] = [];
 
   @Output() pipelineTriggered = new EventEmitter<void>();
 
- 
   runPipeline(): void {
     this.pipelineTriggered.emit();
   }

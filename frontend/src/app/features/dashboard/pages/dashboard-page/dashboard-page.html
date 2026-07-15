@@ -8,7 +8,7 @@
 
     <!-- pipeline status and trigger component -->
     <app-pipeline-runs-table 
-      [pipelineData]="latestRun" 
+      [pipelineRuns]="pipelineRuns" 
       (pipelineTriggered)="onPipelineTriggered()">
     </app-pipeline-runs-table>
   </div>

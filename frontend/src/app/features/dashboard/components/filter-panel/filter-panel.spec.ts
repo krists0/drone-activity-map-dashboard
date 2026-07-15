@@ -104,4 +104,79 @@ describe('FilterPanelComponent Advanced Automation Tests', () => {
     expect(capturedPayload.operator_id).toBe('OP-456');
     expect(capturedPayload.min_battery).toBe(60);
   });
+
+  // 6. CHECK INITIAL DEFAULT STATE
+  it('should initialize localFilters with all empty/default values', () => {
+    expect(component.localFilters).toEqual({
+      drone_type: '',
+      status: '',
+      operator_id: '',
+      min_battery: null,
+      from_date: '',
+      to_date: ''
+    });
+  });
+
+  // 7. REAL DOM CHECK — DRONE TYPE DROPDOWN OPTIONS
+  it('should render exactly 4 options in the drone type dropdown (All Types + 3 categories)', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const selects = compiled.querySelectorAll('select');
+    const droneTypeOptions = selects[0].querySelectorAll('option');
+
+    expect(droneTypeOptions.length).toBe(4);
+    expect(droneTypeOptions[1].textContent?.trim()).toBe('Quadcopter');
+    expect(droneTypeOptions[2].textContent?.trim()).toBe('Fixed Wing');
+    expect(droneTypeOptions[3].textContent?.trim()).toBe('VTOL');
+  });
+
+  // 8. REAL DOM CHECK — STATUS DROPDOWN OPTIONS
+  it('should render exactly 4 options in the status dropdown (All Statuses + 3 statuses)', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const selects = compiled.querySelectorAll('select');
+    const statusOptions = selects[1].querySelectorAll('option');
+
+    expect(statusOptions.length).toBe(4);
+    expect(statusOptions[1].textContent?.trim()).toBe('Active');
+    expect(statusOptions[2].textContent?.trim()).toBe('Landed');
+    expect(statusOptions[3].textContent?.trim()).toBe('Lost Signal');
+  });
+
+  // 9. NGMODEL TWO-WAY BINDING — SIMULATES REAL USER TYPING
+  it('should update localFilters.operator_id when the user types in the input field (ngModel binding)', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const operatorInput = compiled.querySelector('input[placeholder="e.g. OP-123"]') as HTMLInputElement;
+
+    operatorInput.value = 'OP-777';
+    operatorInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(component.localFilters.operator_id).toBe('OP-777');
+  });
+
+  // 10. REAL DOM CLICK — APPLY BUTTON
+  it('should emit filtersChanged when the Apply Filters button is clicked in the DOM', () => {
+    let emitted = false;
+    component.filtersChanged.subscribe(() => (emitted = true));
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const applyBtn = compiled.querySelector('.btn-apply') as HTMLButtonElement;
+    applyBtn.click();
+
+    expect(emitted).toBe(true);
+  });
+
+  // 11. REAL DOM CLICK — CLEAR BUTTON, WITH PAYLOAD CHECK
+  it('should emit filtersChanged with reset values when the Clear Filters button is clicked', () => {
+    component.localFilters.operator_id = 'OP-999';
+    let capturedPayload: any = null;
+    component.filtersChanged.subscribe((payload: any) => (capturedPayload = payload));
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const resetBtn = compiled.querySelector('.btn-reset') as HTMLButtonElement;
+    resetBtn.click();
+
+    expect(capturedPayload).not.toBeNull();
+    expect(capturedPayload.operator_id).toBe('');
+    expect(capturedPayload.min_battery).toBeNull();
+  });
 });

@@ -57,62 +57,125 @@ Real map coordinates are used only for visibility on the frontend map.
 drone-activity-map-dashboard/
 │
 ├── backend/
-│ ├── app/
-│ │ ├── core/
-│ │ │ └── config.py
-│ │ │
-│ │ ├── db/
-│ │ │ └── database.py
-│ │ │
-│ │ ├── models/
-│ │ │ ├── drone.py
-│ │ │ └── pipeline.py
-│ │ │
-│ │ ├── schemas/
-│ │ │ ├── drone.py
-│ │ │ └── pipeline.py
-│ │ │
-│ │ ├── services/
-│ │ │ └── pipeline_service.py
-│ │ │
-│ │ ├── routers/
-│ │ │ ├── drones.py
-│ │ │ └── pipeline.py
-│ │ │
-│ │ └── main.py
-│ │
-│ ├── tests/
-│ ├── requirements.txt
-│ └── Dockerfile
-│
-├── frontend/
-│ ├── src/
-│ │ └── app/
-│ │ ├── core/
-│ │ │ ├── models/
-│ │ │ │ └── drone-record.model.ts
-│ │ │ └── services/
-│ │ │ ├── drone-api.service.ts
-│ │ │ └── pipeline-service.ts
-│ │ │
-│ │ └── features/
-│ │ └── dashboard/
-│ │ ├── components/
-│ │ │ ├── drone-map/
-│ │ │ ├── filter-panel/
-│ │ │ └── pipeline-runs-table/
-│ │ │
-│ │ └── pages/
-│ │ └── dashboard-page/
-│ │
-│ └── Dockerfile
+│   ├── app/
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   └── config.py
+│   │   │
+│   │   ├── db/
+│   │   │   ├── __init__.py
+│   │   │   └── database.py
+│   │   │
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── drone.py
+│   │   │   └── pipeline.py
+│   │   │
+│   │   ├── routers/
+│   │   │   ├── __init__.py
+│   │   │   ├── drones.py
+│   │   │   └── pipeline.py
+│   │   │
+│   │   ├── schemas/
+│   │   │   ├── __init__.py
+│   │   │   ├── drone.py
+│   │   │   └── pipeline.py
+│   │   │
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   └── pipeline_service.py
+│   │   │
+│   │   ├── __init__.py
+│   │   └── main.py
+│   │
+│   ├── tests/
+│   │   └── test_drones.py
+│   │
+│   ├── Dockerfile
+│   └── requirements.txt
 │
 ├── data/
-│ └── drone_records.json
+│   └── drone_records.json
 │
+├── frontend/
+│   ├── public/
+│   │   ├── drone-icon-pin.png
+│   │   └── favicon.ico
+│   │
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── core/
+│   │   │   │   ├── models/
+│   │   │   │   │   └── drone-record.model.ts
+│   │   │   │   │
+│   │   │   │   └── services/
+│   │   │   │       ├── drone-api.service.ts
+│   │   │   │       └── pipeline-api.service.ts
+│   │   │   │
+│   │   │   ├── features/
+│   │   │   │   └── dashboard/
+│   │   │   │       ├── components/
+│   │   │   │       │   ├── drone-map/
+│   │   │   │       │   │   ├── drone-map.html
+│   │   │   │       │   │   ├── drone-map.scss
+│   │   │   │       │   │   ├── drone-map.spec.ts
+│   │   │   │       │   │   └── drone-map.ts
+│   │   │   │       │   │
+│   │   │   │       │   ├── filter-panel/
+│   │   │   │       │   │   ├── filter-panel.html
+│   │   │   │       │   │   ├── filter-panel.scss
+│   │   │   │       │   │   ├── filter-panel.spec.ts
+│   │   │   │       │   │   └── filter-panel.ts
+│   │   │   │       │   │
+│   │   │   │       │   └── pipeline-runs-table/
+│   │   │   │       │       ├── pipeline-runs-table.html
+│   │   │   │       │       ├── pipeline-runs-table.scss
+│   │   │   │       │       ├── pipeline-runs-table.spec.ts
+│   │   │   │       │       └── pipeline-runs-table.ts
+│   │   │   │       │
+│   │   │   │       └── pages/
+│   │   │   │           └── dashboard-page/
+│   │   │   │               ├── dashboard-page.html
+│   │   │   │               ├── dashboard-page.scss
+│   │   │   │               ├── dashboard-page.spec.ts
+│   │   │   │               └── dashboard-page.ts
+│   │   │   │
+│   │   │   ├── shared/
+│   │   │   │   └── components/
+│   │   │   │       ├── error-message/
+│   │   │   │       └── loading-spinner/
+│   │   │   │
+│   │   │   ├── app.config.server.ts
+│   │   │   ├── app.config.ts
+│   │   │   ├── app.html
+│   │   │   ├── app.routes.server.ts
+│   │   │   ├── app.scss
+│   │   │   ├── app.spec.ts
+│   │   │   └── app.ts
+│   │   │
+│   │   ├── index.html
+│   │   ├── main.server.ts
+│   │   ├── main.ts
+│   │   ├── server.ts
+│   │   └── styles.scss
+│   │
+│   ├── .editorconfig
+│   ├── .gitignore
+│   ├── .prettierrc
+│   ├── angular.json
+│   ├── Dockerfile
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── README.md
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   └── tsconfig.spec.json
+│
+├── .env
+├── .gitignore
 ├── docker-compose.yml
-├── README.md
-└── .gitignore
+├── project-architecture.txt
+└── README.md
 ```
 
 ---

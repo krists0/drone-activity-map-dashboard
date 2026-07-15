@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status , HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
@@ -51,5 +51,7 @@ def get_drones_records(
 @router.get("/drones/{id}", response_model=DroneRecordRead)
 def get_single_drone(id: int , db: Session = Depends(get_db)):
     drone = db.query(DroneRecord).filter(DroneRecord.id == id).first()
+    if not drone:
+        raise HTTPException(status_code=404, detail="Drone not found")
     return drone
 

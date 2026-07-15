@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import { DroneMapComponent } from '../../components/drone-map/drone-map';
 import { FilterPanelComponent } from '../../components/filter-panel/filter-panel';
@@ -25,20 +24,16 @@ export class DashboardPageComponent implements OnInit {
   private droneApiService = inject(DroneApiService);
   private pipelineApiService = inject(PipelineService);
   private cdr = inject(ChangeDetectorRef);
+
   drones: DroneRecord[] = [];
-  latestRun: any = null;
+  pipelineRuns: any[] = [];
+
   ngOnInit(): void {
     this.loadDronesFromBackend();
+    this.loadLatestPipelineRunLog();
   }
 
-
-  /**
-   * Listens directly to the filter submission outputs emitted from the child panel component.
-   * Fires a fresh tailored HTTP network payload request every single time Apply Filters is clicked.
-   * @param activeFilters Lowercase parameter tokens mapped directly from the filter form controls
-   */
   onFiltersChanged(activeFilters: any): void {
-  
     const backendFilters: any = {
       drone_type: activeFilters.drone_type,
       status: activeFilters.status,
@@ -54,16 +49,13 @@ export class DashboardPageComponent implements OnInit {
       backendFilters.to_date = `${activeFilters.to_date}T23:59:59Z`;
     }
 
-    // Trigger the official HTTP request stream with the remapped parameter configurations [4.2]
     this.loadDronesFromBackend(backendFilters);
   }
 
-  
   private loadDronesFromBackend(filters: any = {}): void {
     this.droneApiService.getDrones(filters).subscribe({
       next: (data: DroneRecord[]) => {
         this.drones = [...data];
-        // Forces Angular to push the new input into DroneMapComponent immediately
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -73,11 +65,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   onPipelineTriggered(): void {
-    // We call the post ingestion router engine from your API service layer
     this.pipelineApiService.triggerPipeline().subscribe({
       next: (response: any) => {
         console.log('Pipeline executed successfully via UI button request!', response);
-        // Refresh both the map markers list data indices and pipeline run counter displays [4.3]
         this.refreshDashboardData();
       },
       error: (err: any) => {
@@ -91,17 +81,11 @@ export class DashboardPageComponent implements OnInit {
     this.loadLatestPipelineRunLog();
   }
 
-  /**
-   * Queries historical telemetry processing cycles to populate UI tracking tables [4.3]
-   */
   private loadLatestPipelineRunLog(): void {
     this.pipelineApiService.getPipelineRuns().subscribe({
       next: (runs: any[]) => {
-        //Extract the first array item securely INSIDE the network subscribe event block [4.3]
-        if (runs && runs.length > 0) {
-          this.latestRun = runs[0];
-          this.cdr.detectChanges();
-        }
+        this.pipelineRuns = runs;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load pipeline runs log', err);

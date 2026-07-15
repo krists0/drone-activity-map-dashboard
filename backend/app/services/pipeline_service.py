@@ -82,7 +82,7 @@ class PipelineService:
             db.commit()
 
         
-            return {"status": "success", "total_records": pipeline_run.total_records ,"valid_records": pipeline_run.valid_records, "Invalid_records" : pipeline_run.invalid_records}
+            return {"status": "success", "total_records": pipeline_run.total_records ,"valid_records": pipeline_run.valid_records, "invalid_records" : pipeline_run.invalid_records}
         
     
         except Exception as e:
