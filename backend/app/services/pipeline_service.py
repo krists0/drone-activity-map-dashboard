@@ -52,6 +52,7 @@ class PipelineService:
                     )
 
                     if existing_record:
+                        pipeline_run.invalid_records += 1 
                         continue
                     
                     drone_db_record = DroneRecord(

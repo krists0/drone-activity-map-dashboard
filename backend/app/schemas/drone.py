@@ -14,7 +14,7 @@ class DroneRecordBase(BaseModel):
     drone_id : str = Field(..., min_length=1)
     drone_type : str = Field(..., min_length=1)
     operator_id : str = Field(...,min_length=1)
-    latitude : float = Field(..., ge=-90 , le=180)
+    latitude : float = Field(..., ge=-90 , le=90)
     longitude: float = Field(..., ge=-180, le=180)
     altitude_m: float = Field(..., ge=0)
     speed_kmh: float = Field(..., ge=0)
