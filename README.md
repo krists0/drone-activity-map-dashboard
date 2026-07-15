@@ -155,28 +155,55 @@ docker-compose up --build
 - **Backend Swagger API Docs:** `http://localhost:8000/docs`
 
 ---
+### Method B: Manual Local Installation (Step-by-Step)
 
-### Method B: Manual Local Installation
-If you prefer running the components individually, open your terminal windows and run these specific grouped blocks:
 
-#### 1. Start the Python Backend Application
-```bash
-cd backend
-# 1. Create virtual environment, activate it, install all libraries, and start the app at once:
-python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && uvicorn app.main:app --reload
-```
-*(Windows users shell shortcut alternative: `python -m venv .venv; .venv\Scripts\activate; pip install -r requirements.txt; uvicorn app.main:app --reload`)*
-
-#### 2. Start the Angular Frontend Application
-Open a completely separate second terminal window and run:
-```bash
-cd frontend
-# 2. Install all node dependencies and fire up the development server at once:
-npm install && ng serve
-```
-Open your internet browser canvas interface directly to: `http://localhost:4200`
+You can deploy and run the entire drone activity tracking system using either an automated all-in-one Docker Compose routine or manually via local terminal shell environments.
 
 ---
+
+### Method A: Docker Compose Deployment (Recommended - Fully Automated)
+If you have Docker installed, you can build and start the PostgreSQL Database, Python FastAPI Backend, and Angular Frontend **all at once** with a single command. This orchestrates multi-container runtime link bridges automatically [7.6]:
+
+```bash
+# Run this from the root directory to build images, mount volumes, and launch all services
+docker-compose up --build
+```
+
+
+If you prefer running the application layers individually without wrapping everything in Docker containers, follow this precise execution flow:
+
+#### 1. Start the PostgreSQL Database Infrastructure
+The backend server relies on a local PostgreSQL instance. Launch the structural container background layer from the root folder first [7.6]:
+```bash
+docker-compose up -d postgres
+```
+
+#### 2. Start the Python Backend Application
+Open your first terminal window and navigate into the backend directory to activate the environment and launch the FastAPI server engine [3.4]:
+```bash
+cd backend
+
+# For Windows users:
+.venv\Scripts\activate
+
+# For Mac/Linux users (Alternative):
+source .venv/bin/activate
+
+# Start the live uvicorn listener process
+uvicorn app.main:app --reload
+```
+Once initialized, the Swagger interactive API documentation framework will be securely exposed at: `http://localhost:8000/docs` [3.4].
+
+#### 3. Start the Angular Frontend Application
+Open a completely separate second terminal window and execute from the root folder to boot the web client server layer:
+```bash
+cd frontend
+ng serve
+```
+Open your internet browser browser window and navigate directly to the application dashboard layout at: `http://localhost:4200` [4.2]
+
+
 
 ## API Endpoints Reference
 
@@ -185,7 +212,7 @@ Open your internet browser canvas interface directly to: `http://localhost:4200`
 | **POST** | `/api/pipeline/run` | Triggers the local raw telemetry ingestion loop [3.4]. |
 | **GET** | `/api/pipeline/runs` | Returns historical processing log metric summaries [3.4]. |
 | **GET** | `/api/drones` | Fetches filtered drone tracking indices [3.4]. |
-| **GET** | `/api/drone/{id}` | Fetches a single drone record object state by unique identifier [3.4]. |
+| **GET** | `/api/drones/{id}` | Fetches a single drone record object state by unique identifier [3.4]. |
 
 
 
@@ -193,18 +220,22 @@ Open your internet browser canvas interface directly to: `http://localhost:4200`
 
 ## Running Automated Unit Tests
 
-### Backend Tests (Python & Pytest)
+### Backend Tests 
 To execute backend database validation guards and query API parameter criteria verification tests, run from the `backend/` folder:
 ```bash
 pip install pytest httpx
 python -m pytest -v
 ```
 
-### Frontend Tests (Angular & Jasmine/Karma)
+### Frontend Tests 
 To execute frontend layout creation tracking and UI input component controller clear filter state automation checks, run from the `frontend/` folder:
 
-filters
+filters test
 ```bash
 ng test --include=src/app/features/dashboard/components/filter-panel/filter-panel.spec.ts --watch=false
 ```
 
+To execute the isolated UI components dashboard tests (including filter panel form states, type checks, reset actions, and pipeline runs table execution counters triggers) without experiencing Headless Browser WebGL canvas crashes, run from the `frontend/` folder:
+```bash
+ng test --include=src/app/features/dashboard/components/**/*.spec.ts --watch=false
+```

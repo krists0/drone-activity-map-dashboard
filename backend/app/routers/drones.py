@@ -48,7 +48,7 @@ def get_drones_records(
     result = query.all()
     return result
 
-@router.get("/drone/{id}", response_model=DroneRecordRead)
+@router.get("/drones/{id}", response_model=DroneRecordRead)
 def get_single_drone(id: int , db: Session = Depends(get_db)):
     drone = db.query(DroneRecord).filter(DroneRecord.id == id).first()
     return drone
