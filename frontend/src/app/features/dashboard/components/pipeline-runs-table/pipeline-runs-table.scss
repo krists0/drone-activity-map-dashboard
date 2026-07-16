@@ -2,54 +2,43 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background-color: #1e293b; /* Uniform dashboard dark layout */
+  background-color: #1e293b;
   padding: 18px;
   border-radius: 8px;
   border: 1px solid #334155;
-  margin-top: 15px; /* Adds clean spacing below the filters panel */
+  margin-top: 15px;
+  overflow: hidden;     
+  box-sizing: border-box;
+  min-width: 0;          
 
   h3 {
     margin: 0 0 4px 0;
     font-size: 15px;
-    color: #38bdf8; /* Cyber neon blue accent */
+    color: #38bdf8;
     font-weight: 600;
   }
 }
 
-.pipeline-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  label {
-    font-size: 13px;
-    color: #94a3b8; /* Soft readable labeling tint */
-    font-weight: 500;
-  }
-}
-
 .status-badge {
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 4px;
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 6px;
   background-color: #475569;
   color: white;
+  display: inline-block;
 
   &.completed {
     background-color: #16a34a;
-    color: white;
   }
 
   &.failed {
     background-color: #dc2626;
-    color: white;
   }
 
   &.started {
     background-color: #ca8a04;
-    color: white;
   }
 }
 
@@ -71,7 +60,7 @@
 
 .btn-run-pipeline {
   flex: 1;
-  background-color: #22c55e; /* Vibrant action green color */
+  background-color: #22c55e;
   color: white;
   border: none;
   padding: 12px;
@@ -90,4 +79,57 @@
   &:active {
     transform: translateY(1px);
   }
+}
+
+/* --- Table styling, matching the dark dashboard theme --- */
+.runs-table {
+  width: 100%;
+  table-layout: fixed;    /* חדש — כופה על העמודות רוחב קבוע במקום להתפרש לפי תוכן */
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 4px;
+
+  thead tr {
+    border-bottom: 1px solid #334155;
+  }
+
+  th {
+    text-align: left;
+    padding: 6px 4px;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #334155;
+    transition: background-color 0.15s;
+
+    &:hover {
+      background-color: #253449;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  td {
+    padding: 8px 4px;
+    color: #f8fafc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.empty-state {
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 0;
 }

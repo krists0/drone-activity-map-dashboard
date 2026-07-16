@@ -21,7 +21,7 @@ import { DroneRecord } from '../../../../core/models/drone-record.model';
   selector: 'app-drone-map',
   standalone: true,
   templateUrl: './drone-map.html',
-  styleUrls: ['./drone-map.scss'] // 
+  styleUrls: ['./drone-map.scss'] 
 })
 export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
@@ -126,12 +126,12 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   getDronePopupHTML(drone: DroneRecord): string {
     const isLowBattery = drone.battery_percent < 20;
-    const isActiveStatus = drone.status.toLowerCase() === 'active';
+    //const isActiveStatus = drone.status.toLowerCase() === 'active';
     const formattedTime = drone.timestamp ? new Date(drone.timestamp).toLocaleString('en-GB') : 'N/A';
 
     const batteryColor = isLowBattery ? '#e53e3e' : '#38a169';
-    const statusColor = isActiveStatus ? '#38a169' : '#e53e3e';
-
+    //const statusColor = isActiveStatus ? '#38a169' : '#e53e3e';
+    const statusColor = this.getStatusColor(drone.status);
     return `
       <div style="font-family: sans-serif; padding: 12px; line-height: 1.6; text-align: left; background: #ffffff;">
         <div style="border-bottom: 2px solid #eef2f5; padding-bottom: 8px; margin-bottom: 10px;">
@@ -163,6 +163,20 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     `;
   }
 
+
+  private getStatusColor(status: string): string {
+    const normalizedStatus = status.toLowerCase();
+
+    if (normalizedStatus === 'active') {
+      return '#38a169';
+    }
+
+    if (normalizedStatus === 'landed') {
+      return '#f59e0b';
+    }
+
+    return '#e53e3e';
+  }
   ngOnDestroy(): void {
     this.clearMarkers();
     this.map?.remove();
