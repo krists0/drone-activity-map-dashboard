@@ -1,7 +1,6 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
-import { vi } from 'vitest';
 import { DroneMapComponent } from './drone-map';
 import { DroneRecord } from '../../../../core/models/drone-record.model';
 
