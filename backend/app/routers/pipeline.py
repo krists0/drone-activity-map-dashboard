@@ -9,7 +9,8 @@ from app.models.pipeline import PipelineRun
 #API Endpoints pipline
 router = APIRouter()
 
-INPUT_FILE_PATH = os.path.join(os.path.dirname(__file__), "../../../data/drone_records.json")
+#INPUT_FILE_PATH = os.path.join(os.path.dirname(__file__), "../../../data/drone_records.json")
+INPUT_FILE_PATH = os.path.join(os.path.dirname(__file__), "../../../data/drone_records_csv.csv")
 
 
 
