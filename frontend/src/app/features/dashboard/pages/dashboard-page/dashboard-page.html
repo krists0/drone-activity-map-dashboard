@@ -9,14 +9,29 @@
     <!-- pipeline status and trigger component -->
     <app-pipeline-runs-table 
       [pipelineRuns]="pipelineRuns" 
-      (pipelineTriggered)="onPipelineTriggered()">
+      (pipelineTriggered)="onPipelineTriggered()"
+      [currentPage]="current_page_pipeline"
+      [hasNextPage]="hasNextPagePipeline"
+      (pageChanged)="onPageChangedPipeline($event)"
+      >
     </app-pipeline-runs-table>
+    <div class="pagination">
+      <label>Drone Pagination:</label>
+      <div class="pagination-controls">
+        <button class="btn-page" (click)="previousPage()">‹ Previous</button>
+        <span class="page-indicator">Page {{ current_page }}</span>
+        <button class="btn-page" (click)="nextPage()">Next ›</button>
+      </div>
+    </div>
   </div>
   
 
   <!-- Main section containing the map display -->
   <div class="main-content">
     <app-drone-map [droneList]="drones"></app-drone-map>
+    
   </div>
-
+ 
+    
+  
 </div>

@@ -27,4 +27,11 @@
   </table>
 
   <p *ngIf="pipelineRuns.length === 0" class="empty-state">No runs yet.</p>
+  <div class="pagination">
+    <div class="pagination-controls">
+      <button class="btn-page" [disabled]="currentPage <= 1" (click)="previousPage()">‹ Previous</button>
+      <span class="page-indicator">Page {{ currentPage }}</span>
+      <button class="btn-page" [disabled]="!hasNextPage" (click)="nextPage()">Next ›</button>
+    </div>
+  </div>
 </div>

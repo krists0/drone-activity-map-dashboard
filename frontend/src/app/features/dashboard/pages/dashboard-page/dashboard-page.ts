@@ -20,13 +20,17 @@ import { PipelineService } from '../../../../core/services/pipeline-api.service'
   styleUrls: ['./dashboard-page.scss']
 })
 export class DashboardPageComponent implements OnInit {
-  
+  current_page = 1;
+  current_page_pipeline = 1;
+  page_size_pipeline= 10;
+  hasNextPagePipeline = true;
   private droneApiService = inject(DroneApiService);
   private pipelineApiService = inject(PipelineService);
   private cdr = inject(ChangeDetectorRef);
-
+  clearCounter = 0;
   drones: DroneRecord[] = [];
   pipelineRuns: any[] = [];
+
 
   ngOnInit(): void {
     this.loadDronesFromBackend();
@@ -38,7 +42,8 @@ export class DashboardPageComponent implements OnInit {
       drone_type: activeFilters.drone_type,
       status: activeFilters.status,
       operator_id: activeFilters.operator_id,
-      min_battery: activeFilters.min_battery
+      min_battery: activeFilters.min_battery,
+      max_battery: activeFilters.max_battery
     };
 
     if (activeFilters.from_date && activeFilters.from_date !== '') {
@@ -68,6 +73,7 @@ export class DashboardPageComponent implements OnInit {
     this.pipelineApiService.triggerPipeline().subscribe({
       next: (response: any) => {
         console.log('Pipeline executed successfully via UI button request!', response);
+        this.current_page_pipeline = 1;
         this.refreshDashboardData();
       },
       error: (err: any) => {
@@ -91,5 +97,38 @@ export class DashboardPageComponent implements OnInit {
         console.error('Failed to load pipeline runs log', err);
       }
     });
+  }
+
+  
+ 
+  
+  nextPage(): void {
+    this.current_page += 1;
+    this.loadDronesFromBackend({ page: this.current_page });
+  }
+
+  previousPage(): void {
+    if (this.current_page > 1) {
+      this.current_page -= 1;
+      this.loadDronesFromBackend({ page: this.current_page });
+  }
+  }
+  onPageChangedPipeline(newPage: number): void {
+    this.current_page_pipeline = newPage;
+    this.loadPipelineRuns();
+  }
+  private loadPipelineRuns(): void {
+    this.pipelineApiService
+      .getPipelineRuns(this.current_page_pipeline, this.page_size_pipeline)
+      .subscribe({
+        next: (runs: any[]) => {
+          this.pipelineRuns = runs;
+          this.hasNextPagePipeline = runs.length === this.page_size_pipeline;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Failed to load pipeline runs log', err);
+        }
+      });
   }
 }

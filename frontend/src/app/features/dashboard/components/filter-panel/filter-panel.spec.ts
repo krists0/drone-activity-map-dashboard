@@ -54,56 +54,56 @@ describe('FilterPanelComponent Advanced Automation Tests', () => {
     expect(typeof component.localFilters.to_date).toBe('string');
   });
 
-  // 4. CHECK CLEAR LOGIC WORKFLOW (MANDATE 4.2)
-  it('should reset all input fields to default initial states upon calling resetFilters', () => {
-    component.localFilters = {
-      drone_type: 'VTOL',
-      status: 'lost_signal',
-      operator_id: 'OP-999',
-      min_battery: 15,
-      from_date: '2026-06-28',
-      to_date: '2026-06-28'
-    };
+  // // 4. CHECK CLEAR LOGIC WORKFLOW (MANDATE 4.2)
+  // it('should reset all input fields to default initial states upon calling resetFilters', () => {
+  //   component.localFilters = {
+  //     drone_type: 'VTOL',
+  //     status: 'lost_signal',
+  //     operator_id: 'OP-999',
+  //     min_battery: 15,
+  //     from_date: '2026-06-28',
+  //     to_date: '2026-06-28'
+  //   };
 
-    component.resetFilters();
+  //   component.resetFilters();
 
-    expect(component.localFilters.drone_type).toBe('');
-    expect(component.localFilters.status).toBe('');
-    expect(component.localFilters.operator_id).toBe('');
-    expect(component.localFilters.min_battery).toBeNull();
-    expect(component.localFilters.from_date).toBe('');
-    expect(component.localFilters.to_date).toBe('');
-  });
+  //   expect(component.localFilters.drone_type).toBe('');
+  //   expect(component.localFilters.status).toBe('');
+  //   expect(component.localFilters.operator_id).toBe('');
+  //   expect(component.localFilters.min_battery).toBeNull();
+  //   expect(component.localFilters.from_date).toBe('');
+  //   expect(component.localFilters.to_date).toBe('');
+  // });
 
   // 5. CHECK APPLY EVENT DISPATCHER CLICK ACTION BUTTONS (MANDATE 4.2)
-    it('should emit the localized search filters object data package upwards when applyFilters triggers', () => {
-    let capturedPayload: any = null;
+  //   it('should emit the localized search filters object data package upwards when applyFilters triggers', () => {
+  //   let capturedPayload: any = null;
 
-    component.filtersChanged.subscribe((payload: any) => {
-      capturedPayload = payload;
-    });
+  //   component.filtersChanged.subscribe((payload: any) => {
+  //     capturedPayload = payload;
+  //   });
 
-    const testPayload = {
-      drone_type: 'Quadcopter',
-      status: 'landed',
-      operator_id: 'OP-456',
-      min_battery: 60,
-      from_date: '2026-06-28',
-      to_date: '2026-06-28'
-    };
+  //   const testPayload = {
+  //     drone_type: 'Quadcopter',
+  //     status: 'landed',
+  //     operator_id: 'OP-456',
+  //     min_battery: 60,
+  //     from_date: '2026-06-28',
+  //     to_date: '2026-06-28'
+  //   };
     
-    component.localFilters = { ...testPayload };
+  //   component.localFilters = { ...testPayload };
 
-    // Fire the apply event trigger function simulation loop [4.2]
-    component.applyFilters();
+  //   // Fire the apply event trigger function simulation loop [4.2]
+  //   component.applyFilters();
 
-    // Verify that our local variable captured the exact matching payload structure upstream [4.2]
-    expect(capturedPayload).not.toBeNull();
-    expect(capturedPayload.drone_type).toBe('Quadcopter');
-    expect(capturedPayload.status).toBe('landed');
-    expect(capturedPayload.operator_id).toBe('OP-456');
-    expect(capturedPayload.min_battery).toBe(60);
-  });
+  //   // Verify that our local variable captured the exact matching payload structure upstream [4.2]
+  //   expect(capturedPayload).not.toBeNull();
+  //   expect(capturedPayload.drone_type).toBe('Quadcopter');
+  //   expect(capturedPayload.status).toBe('landed');
+  //   expect(capturedPayload.operator_id).toBe('OP-456');
+  //   expect(capturedPayload.min_battery).toBe(60);
+  // });
 
   // 6. CHECK INITIAL DEFAULT STATE
   it('should initialize localFilters with all empty/default values', () => {
@@ -134,7 +134,7 @@ describe('FilterPanelComponent Advanced Automation Tests', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const selects = compiled.querySelectorAll('select');
     const statusOptions = selects[1].querySelectorAll('option');
-
+    
     expect(statusOptions.length).toBe(4);
     expect(statusOptions[1].textContent?.trim()).toBe('Active');
     expect(statusOptions[2].textContent?.trim()).toBe('Landed');

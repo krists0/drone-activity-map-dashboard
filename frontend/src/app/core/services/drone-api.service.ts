@@ -12,9 +12,7 @@ export class DroneApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-//   getDrones(): Observable<DroneRecord[]> {
-//     return this.http.get<DroneRecord[]>(this.apiUrl);
-//   }
+
 getDrones(filters: any = {}): Observable<DroneRecord[]> {
     let params = new HttpParams();
 
@@ -31,6 +29,9 @@ getDrones(filters: any = {}): Observable<DroneRecord[]> {
     if (filters.min_battery) {
       params = params.set('min_battery', filters.min_battery.toString());
     }
+    if (filters.max_battery) {
+      params = params.set('max_battery', filters.max_battery.toString());
+    }
     if (filters.from_date) {
       params = params.set('from_date', filters.from_date);
     }
@@ -38,7 +39,14 @@ getDrones(filters: any = {}): Observable<DroneRecord[]> {
       params = params.set('to_date', filters.to_date);
     }
 
+    if (filters.page) {
+      params = params.set('page', filters.page.toString());
+    }
+    if (filters.page_size) {
+      params = params.set('page_size', filters.page_size.toString());
+    }
     // Sends the payload over the wire: GET /api/drones?status=active&min_battery=50
     return this.http.get<DroneRecord[]>(this.apiUrl, { params });
   }
 }
+

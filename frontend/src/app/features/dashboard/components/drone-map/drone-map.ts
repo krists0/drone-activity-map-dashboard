@@ -29,6 +29,7 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   
   @Input() droneList: DroneRecord[] = []; 
 
+  @Input() clearTrigger: number =0 ;
   private mapReady = false;
   currentUtcTime = '';
 
@@ -71,6 +72,9 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (changes['droneList']) {
       this.renderDronesIfReady();
     }
+    if(changes['clearTrigger']){
+      this.clearMarkers();
+    }
   }
   private renderDronesIfReady(): void {
     if (!this.mapReady || !this.map) {
@@ -109,7 +113,7 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     });
   }
 
-  private clearMarkers(): void {
+  public clearMarkers(): void {
     this.markers.forEach(m => m.remove());
     this.markers = [];
   }
@@ -126,11 +130,11 @@ export class DroneMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   getDronePopupHTML(drone: DroneRecord): string {
     const isLowBattery = drone.battery_percent < 20;
-    //const isActiveStatus = drone.status.toLowerCase() === 'active';
+  
     const formattedTime = drone.timestamp ? new Date(drone.timestamp).toLocaleString('en-GB') : 'N/A';
 
     const batteryColor = isLowBattery ? '#e53e3e' : '#38a169';
-    //const statusColor = isActiveStatus ? '#38a169' : '#e53e3e';
+
     const statusColor = this.getStatusColor(drone.status);
     return `
       <div style="font-family: sans-serif; padding: 12px; line-height: 1.6; text-align: left; background: #ffffff;">

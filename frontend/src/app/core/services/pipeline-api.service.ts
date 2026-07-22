@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -21,7 +21,14 @@ export class PipelineService {
   /**
    * Connects to GET /api/pipeline/runs to fetch historical ingestion metrics cycles logs [4].
    */
-  getPipelineRuns(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/runs`);
+  // getPipelineRuns(): Observable<any[]> {
+  //   return this.http.get<any[]>(`${this.apiUrl}/runs`);
+  // }
+  getPipelineRuns(page: number = 1 , pageSize: number = 10): Observable<any[]> {
+    const params= new HttpParams().set('page' , page.toString()).set('page_size', pageSize.toString());
+    return this.http.get<any[]>(`${this.apiUrl}/runs` , {params})
   }
+
+
+  
 }

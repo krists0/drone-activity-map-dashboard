@@ -14,7 +14,22 @@ export class PipelineRunsTable {
 
   @Output() pipelineTriggered = new EventEmitter<void>();
 
+  @Input() currentPage: number =1;
+  @Input() hasNextPage: boolean= true;
+  @Output() pageChanged = new EventEmitter<number>();
+
   runPipeline(): void {
     this.pipelineTriggered.emit();
+  }
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.pageChanged.emit(this.currentPage - 1);
+    }
+  }
+
+  nextPage(): void {
+    if (this.hasNextPage) {
+      this.pageChanged.emit(this.currentPage + 1);
+    }
   }
 }
